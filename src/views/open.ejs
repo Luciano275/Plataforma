@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= nameFile %></title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        body{
+            overflow-x: hidden;
+        }
+        #root{
+            padding: 0px 10px;
+        }
+        .container-img{
+            width:800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0px;
+            max-width: 800px;
+        }
+        .container-img img{
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+        h1{
+            font-size: 4em;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" style="text-decoration: none; font-size: 3em; color: #fff; background: #09f;padding: 0px 20px;margin-left: 5px;border-radius: 50px;margin-top: 10px; display: block;width: max-content;">Volver</a>
+    <div id="root">
+        <h1><%= nameFile %></h1>
+        <h2>Fecha: <span style="font-weight: 70;">
+            <%= resultados.fecha %>
+        </span></h2>
+        <% if(ext != '.pdf'){ %>
+            <div class="container-img">
+                <img class="img" src="/api/upload/<%= resultados.nombre %>" alt="">
+            </div>
+        <%}else if(ext == '.pdf' || ext == '.docx'){ %>
+            <div class="container-pdf">
+                <iframe src="/api/upload/<%= resultados.nombre %>" frameborder="0" style="width: 100%; height: 100vh;"></iframe>
+            </div>
+        <%} %>
+    </div>
+</body>
+</html>
