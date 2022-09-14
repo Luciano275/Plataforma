@@ -1,0 +1,84 @@
+
+@import "Mixin.scss";
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+a{
+    text-decoration: none;
+}
+
+h1{
+    font-size: 5em;
+    font-weight: 70;
+    text-align: center;
+}
+
+#login-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 40px 5px;
+    input{
+        outline: none;
+        padding: 10px 25px;
+        font-size: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #aaa;
+        width: 30%;
+        max-width: 100%;
+        @include transition-mixin(all, .3s, ease);
+        &:focus{
+            border-color: #48e;
+        }
+    }
+    button{
+        width: 30%;
+        max-width: 100%;
+        font-size: 20px;
+        border: none;
+        @include transition-mixin(all, .3s, ease);
+        background: #48e;
+        color: #fff;
+        padding: 10px 5px;
+        &:hover{
+            background: #09f;
+            cursor: pointer;
+        }
+    }
+    .info{
+        margin-bottom: 20px;
+        width: 30%;
+        max-width: 100%;
+        height: 0px;
+        overflow: hidden;
+        @include transition-mixin(all, .3s, ease-in-out);
+        background: #f00;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0px 10px;
+        max-height: 50px;
+    }
+    .error{
+        height: 50px;
+    }
+    #register{
+        display: block;
+        margin-bottom: 20px;
+        width: 30%;
+        color: #48e;
+        @include transition-mixin(all, .3s, ease);
+        &:hover{
+            text-decoration: underline;
+            color: #09f;
+        }
+    }
+}
+
+@import "MediaForm.scss"

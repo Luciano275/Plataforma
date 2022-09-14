@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= nameFile %></title>
+    <link rel="stylesheet" href="/api/footer.css">
     <style>
         *{
             margin: 0;
@@ -34,6 +35,11 @@
         h1{
             font-size: 4em;
         }
+        .container-txt{
+            background: #ccc;
+            padding: 15px;
+            margin: 20px 0px;
+        }
     </style>
 </head>
 <body>
@@ -43,15 +49,26 @@
         <h2>Fecha: <span style="font-weight: 70;">
             <%= resultados.fecha %>
         </span></h2>
-        <% if(ext != '.pdf'){ %>
+        <% if(ext == '.jpg' || ext == '.png' || ext == '.jpeg' || ext == '.webp' || ext == '.gif'){ %>
             <div class="container-img">
                 <img class="img" src="/api/upload/<%= resultados.nombre %>" alt="">
             </div>
-        <%}else if(ext == '.pdf' || ext == '.docx'){ %>
+        <%}else if(ext == '.pdf'){ %>
             <div class="container-pdf">
                 <iframe src="/api/upload/<%= resultados.nombre %>" frameborder="0" style="width: 100%; height: 100vh;"></iframe>
             </div>
+        <%}else if(ext == '.txt'){ %>
+            <div class="container-txt">
+                <script>
+                    fetch('/api/upload/<%= resultados.nombre %>')
+                        .then(rs => rs.text())
+                        .then((txt) => {
+                            document.querySelector('.container-txt').innerText = `${txt}`
+                        })
+                </script>
+            </div>
         <%} %>
     </div>
+    <%- include('components/Footer.ejs') %>
 </body>
 </html>

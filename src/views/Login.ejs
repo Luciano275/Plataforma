@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/api/sass/styleLogin.css">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <h1>Login</h1>
+    <form id="login-form">
+        <input type="text" name="nombre" id="nombre" placeholder="Nombre">
+        <input type="password" name="password" id="password" placeholder="Password">
+        <div class="info"></div>
+        <a href="/register" id="register">Registrarse</a>
+        <button>Iniciar Sesion</button>
+    </form>
+    <script>
+        let info = document.querySelector('.info');
+        document.querySelector('#login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let formData = new FormData();
+
+            formData.append("nombre", document.querySelector('#login-form #nombre').value);
+            formData.append("password", document.querySelector('#login-form #password').value)
+
+            fetch('/api-rest-user/login', {
+                method: 'POST',
+                body: formData
+            })
+                .then(rs => rs.json())
+                .then(data => {
+                    if(data.status == 500){
+                        info.classList.add('error');
+                        info.innerText = 'Se admite texto, numeros y por lo menos 4 caracteres.'
+                    }else if(data.status == 404){
+                        info.classList.add('error');
+                        info.innerText = 'Datos incorrectos!'
+                    }else if(data.status == 200){
+                        fetch('/api-rest/auth')
+                            .then((d) => d.json())
+                            .then((dt) => {
+                                if(dt.status === 200){
+                                    Swal.fire({
+                                        title: 'Login',
+                                        text: 'Inicio de sesion correcto!',
+                                        icon: 'success',
+                                        timer: 1000
+                                    }).then(() => {
+                                        window.location.reload()
+                                        window.location.pathname = '/login/auth/perfect'
+                                    })
+                                }else{
+                                    Swal.fire({
+                                        title: 'Login',
+                                        text: 'Sesion no disponible',
+                                        icon: 'error'
+                                    })
+                                }
+                            })
+                    }
+                })
+        })
+    </script>
+</body>
+</html>

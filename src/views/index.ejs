@@ -1,166 +1,212 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-        a{
-            text-decoration: none;
-            display: block;
-        }
-        body{
-            overflow-x: hidden;
-        }
-        .dadArchivos{
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-        }
-        .dadArchivos .childArchivo{
-            min-width: 250px;
-            width: 300px;
-            margin: 10px;
-            color: #fff;
-            background: #09f;
-            display: flex !important;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 15px 5px;
-            transition: all 500ms ease;
-            max-height: 150px;
-            height: 150px;
-            overflow-x: hidden;
-            overflow-y: auto;
-            text-align: center;
-        }
-        .dadArchivos .childArchivo:hover{
-            background: #07f;
-        }
-        form{
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        form .input{
-            width: 30%;
-            text-align: center;
-            position: relative;
-            margin: 30px 0px;
-        }
-        form input{
-            position: relative;
-            z-index: 10;
-            padding: 15px 10px;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            background: #fff;
-            cursor: pointer;
-        }
-        form input:hover ~ #subir{
-            background: #69f;
-        }
-        form .input #subir{
-            position: absolute;
-            padding: 15px 10px;
-            z-index: -1;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #48e;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        form button{
-            display: block;
-            border: none;
-            color: #fff;
-            background: #248;
-            width: 30%;
-            padding: 15px 5px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        form button:hover{
-            background: #026;
-        }
-        h1{
-            font-size: 5em;
-            font-weight: 200;
-            padding: 15px 10px;
-            text-align: center;
-        }
-        .archivos{
-            font-size: 3em;
-            font-weight: 70;
-            text-align: center;
-            padding: 15px 10px
-        }
-        #data-file{
-            margin-bottom: 30px;
-            display: none;
-        }
-    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0".>
+    <title>Documento</title>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="/api/footer.css">
+    <link rel="stylesheet" href="/api/sass/styleIndex.css">
 </head>
 <body>
+    <%- include("components/Nav.ejs") %>
     <h1>Plataforma</h1>
-    <form action="/api-rest/add" method="post" id="formAdd" enctype="multipart/form-data">
+    <form method="post" id="formAdd" enctype="multipart/form-data">
         <div class="input">
             <input type="file" name="archivo" id="archivo">
             <span id="subir">Subir un archivo</span>
         </div>
         <p id='data-file'></p>
-        <button>Send</button>
-        <% if(typeof message != "undefined"){ %>
-            <h2><%= message %></h2>
-            <script>
-                setTimeout(() => {
-                    window.location.pathname = '/';
-                }, 1000);
-            </script>
-        <%} %>
-    </form>
-    <h2 class="archivos">Archivos:</h2>
-    <% if(typeof datos != "undefined"){ %>
-        <div class="dadArchivos">
-                <% datos.forEach((data, index) => { %>
-                    <% if(exts[index] == '.jpg' || exts[index] == '.png' || exts[index] == '.gif' || exts[index] == '.jpeg' || exts[index] == '.pdf'){ %>
-                        <a href='/open/<%= data.ID %>' class="childArchivo">
-                            <h2><%= data.ID %></h2>
-                            <h2><%= data.originalname %></h2>
-                            <p><%= data.fecha %></p>
-                        </a>
-                    <%}else{ %>
-                        <a href='/open/<%= data.ID %>' download="<%= data.originalname %>" class="childArchivo">
-                            <h2><%= data.ID %></h2>
-                            <h2><%= data.originalname %></h2>
-                            <p><%= data.fecha %></p>
-                        </a>
-                    <%} %>
-                <%}) %>
+        <div class="buttons-p-v">
+            <button id="public" type="button">Publico</button>
+            <button id="private" type="button">Privado</button>
         </div>
-    <%} %>
+        <button id="send">Enviar</button>
+    </form>
+    <h2 id="private-arch">Tus Archivos Privados:</h2>
+    <div class="datosPrivados"></div>
+
+    <h2 class="archivos">Archivos Publicos:</h2>
+    <div class="dadArchivos"></div>
+    <%- include('components/Footer.ejs') %>
     <script>
+
+        let pv = 'publico';
+        let dp = document.querySelector('.datosPrivados');
+
+        document.querySelector("#public").addEventListener("click", (e) => {
+            pv = 'publico'
+            document.querySelector('#private').disabled = false;
+            e.target.disabled = true;
+        })
+
+        document.querySelector('#private').addEventListener('click', (e) => {
+            pv = 'privado';
+            console.log(pv)
+            document.querySelector("#public").disabled = false;
+            e.target.disabled = true;
+        })
+
+        document.querySelector('#logout').addEventListener('click', () => {
+            let timerInterval;
+            Swal.fire({
+                title: 'Logout',
+                text: 'Closing session...',
+                timer: 1000,
+                timerProgressBar: true,
+            }).then((result) => {
+                if(result.dismiss === Swal.DismissReason.timer){
+                    fetch('/api-rest/logout')
+                        .then((rs) => rs.json())
+                        .then((dt) => {
+                            Swal.fire({
+                                title: 'Logout',
+                                text: 'Session Closed!',
+                                icon: 'success',
+                                timer: 700
+                            })
+                                .then(() => {
+                                    window.location.reload();
+                                })
+                        })
+                }
+            })
+        })
+
+        const obtenerArchivos = () => {
+            let dadArchivos = document.querySelector(".dadArchivos")
+            fetch('/api-rest/get')
+                .then(rs => rs.json())
+                .then(data => {
+                    if(data.datosPrivados.length > 0){
+                        let variableTmp = '';
+                        let datoP = [];
+                        data.datosPrivados.forEach((datoprivado) => {
+                            if(datoprivado.psde == '<%= password %>'){
+                                datoP.push(datoprivado)
+                            }
+                        })
+                        setTimeout(() => {
+                            if(datoP.length > 0){
+                                dp.style.display = 'flex'
+                                document.querySelector('#private-arch').style.display = 'block'
+                                // datoP.forEach((dr) => {
+                                //     console.log(dr)
+                                //     variableTmp += `
+                                //     <a href='/open/${dr.nombre}' class="privado-archivo">
+                                //         <h2>${dr.ID}</h2>
+                                //         <h2>${dr.originalname.length >= 16 ? dr.originalname.substring(0,16) + '...' : dr.originalname}</h2>
+                                //         <p>${dr.fecha}</p>
+                                //         <p><b>${dr.de}</b></p>
+                                //         <span class='animation-box' title='${dr.originalname}'>Abrir</span>
+                                //     </a>
+                                //     `
+                                // })
+                                datoP.forEach((dt, index) => {
+                                    if(data.exts[index].trim() == ".jpg" || data.exts[index].trim() == '.png' || data.exts[index].trim() == '.jpeg' || data.exts[index].trim() == '.pdf' || data.exts[index].trim() == '.webp' || data.exts[index].trim() == '.txt'){
+                                        variableTmp += `
+                                        <a href='/open/${dt.nombre}' class="privado-archivo">
+                                            <h2>${dt.ID}</h2>
+                                            <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                            <p>${dt.fecha}</p>
+                                            <p><b>${dt.de}</b></p>
+                                            <span class='animation-box' title='${dt.originalname}'>Abrir</span>
+                                        </a>
+                                        `
+                                    }else{
+                                        variableTmp+=`
+                                        <a href='/open/${dt.ID}' download="${dt.originalname}" class="privado-archivo">
+                                            <h2>${dt.ID}</h2>
+                                            <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                            <p>${dt.fecha}</p>
+                                            <p>${dt.de}</p>
+                                            <span class='animation-box' title='${dt.originalname}'>Descargar</span>
+                                        </a>
+                                        `
+                                    }
+                                })
+                                dp.innerHTML = variableTmp;
+                            }
+                        }, 100);
+                    }
+                    if(data.datos.length > 0){
+                        let temp = '';
+                        data.datos.forEach((dt, index) => {
+                            if(data.exts[index].trim() == ".jpg" || data.exts[index].trim() == '.png' || data.exts[index].trim() == '.jpeg' || data.exts[index].trim() == '.pdf' || data.exts[index].trim() == '.webp' || data.exts[index].trim() == '.txt'){
+                                temp += `
+                                <a href='/open/${dt.nombre}' class="childArchivo">
+                                    <h2>${dt.ID}</h2>
+                                    <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                    <p>${dt.fecha}</p>
+                                    <p><b>${dt.de}</b></p>
+                                    <span class='animation-box' title='${dt.originalname}'>Abrir</span>
+                                </a>
+                                `
+                            }else{
+                                temp+=`
+                                <a key='1' href='/open/${dt.ID}' download="${dt.originalname}" class="childArchivo">
+                                    <h2>${dt.ID}</h2>
+                                    <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                    <p>${dt.fecha}</p>
+                                    <p>${dt.de}</p>
+                                    <span class='animation-box' title='${dt.originalname}'>Descargar</span>
+                                </a>
+                                `
+                            }
+                        })
+                        dadArchivos.innerHTML = temp;
+                    }
+                })
+                .catch(err => console.log(err))
+        }
+
+        obtenerArchivos()
+
         document.querySelector('#formAdd input[type=file]').addEventListener('change', (e) => {
             document.querySelector('#data-file').style.display = 'block'
             document.querySelector("#data-file").innerText = e.target.files[0].name
+        })
+
+        document.querySelector('#formAdd input[type=file]').addEventListener('click', (e) => {
+            document.querySelector('#data-file').style.display = 'block'
+            document.querySelector("#data-file").innerText = ""
+        })
+
+        document.querySelector('#formAdd').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if(typeof document.querySelector('#formAdd input[type=file]').files[0] != 'undefined'){
+                let formData = new FormData();
+                formData.append('archivo', document.querySelector('#formAdd input[type=file]').files[0]);
+                formData.append('publicPrv', pv);
+                formData.append('del', '<%= rol %> <%= nombre %> <%= apellido %>')
+                formData.append('psd', '<%= password %>')
+                fetch('/api-rest/add', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(rs => rs.json())
+                    .then(data => {
+                        if(data.status === 200){
+                            document.querySelector('#formAdd').reset();
+                            document.querySelector('#data-file').style.display = 'none'
+                            obtenerArchivos();
+                            Swal.fire({
+                                title: 'Add',
+                                text: data.message,
+                                icon: 'success',
+                                timer: 1000
+                            })
+                        }
+                    })
+            }else{
+                Swal.fire({
+                    title: 'Add',
+                    text: 'Completa el campo!',
+                    icon: 'error',
+                    confirmButtonText: 'Try Again'
+                })
+            }
         })
     </script>
 </body>

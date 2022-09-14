@@ -1,0 +1,25 @@
+@mixin transition-mixin($a, $s, $e){
+    transition: $a $s $e !important;
+    -webkit-transition: $a $s $e !important;
+    -moz-transition: $a $s $e !important;
+}
+
+@mixin animation-mixin($n, $s, $i, $f){
+    animation: $n $s $i $f;
+    -webkit-animation: $n $s $i $f;
+    -moz-animation: $n $s $i $f;
+}
+
+body{
+    overflow-x: hidden;
+    @include animation-mixin(fade, .5s, ease, forwards);
+}
+
+@keyframes fade{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}

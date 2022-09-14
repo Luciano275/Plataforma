@@ -1,0 +1,234 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  transition: all 500ms ease;
+}
+
+a {
+  text-decoration: none;
+  display: block;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.dadArchivos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 10px;
+}
+
+.dadArchivos .childArchivo {
+  min-width: 250px;
+  width: 300px;
+  margin: 10px;
+  color: #fff;
+  background: #09f;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 15px 5px;
+  transition: all 500ms ease;
+  max-height: 150px;
+  height: 150px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-align: center;
+  word-break: break-all;
+  position: relative;
+}
+
+.animation-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 20;
+  transition: all 500ms ease;
+  overflow: hidden;
+  word-break: keep-all;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+}
+
+.dadArchivos .childArchivo:hover .animation-box {
+  width: 100%;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+form .buttons-p-v {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+form .buttons-p-v button {
+  display: block;
+  width: 100px;
+  font-size: 20px;
+  margin: 5px;
+}
+form .buttons-p-v button:hover {
+  cursor: pointer;
+}
+
+form .input {
+  width: 30%;
+  text-align: center;
+  position: relative;
+  margin: 30px 0px;
+}
+
+form input {
+  position: relative;
+  z-index: 10;
+  padding: 15px 10px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background: #fff;
+  cursor: pointer;
+}
+
+form input:hover ~ #subir {
+  background: #69f;
+}
+
+form .input #subir {
+  position: absolute;
+  padding: 15px 10px;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #48e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+form #send {
+  display: block;
+  border: none;
+  color: #fff;
+  background: #248;
+  width: 30%;
+  padding: 15px 5px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+form #send:hover {
+  background: #026;
+}
+
+h1 {
+  font-size: 5em;
+  font-weight: 200;
+  padding: 15px 10px;
+  text-align: center;
+}
+
+.archivos {
+  font-size: 3em;
+  font-weight: 70;
+  text-align: center;
+  padding: 15px 10px;
+}
+
+#data-file {
+  margin-bottom: 30px;
+  display: none;
+}
+
+nav {
+  background: #09f;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav h2 {
+  font-weight: 400;
+  color: #fff;
+}
+nav #logout {
+  background: #f00;
+  color: #fff;
+  padding: 5px 20px;
+  border: none;
+  font-size: 20px;
+  border-radius: 50px;
+}
+nav #logout:hover {
+  cursor: pointer;
+  background: #700;
+}
+
+#private-arch {
+  display: none;
+  font-size: 3em;
+  font-weight: 70;
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.datosPrivados {
+  display: none;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0px 10px;
+}
+.datosPrivados #private-arch {
+  font-size: 3em;
+  font-weight: 70;
+}
+.datosPrivados .privado-archivo {
+  min-width: 250px;
+  width: 300px;
+  margin: 10px;
+  color: #fff;
+  background: #258;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 15px 5px;
+  transition: all 500ms ease;
+  max-height: 180px;
+  height: 180px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-align: center;
+  word-break: break-all;
+  position: relative;
+}
+.datosPrivados .privado-archivo:hover .animation-box {
+  width: 100%;
+}
+
+/*# sourceMappingURL=styleIndex.css.map */

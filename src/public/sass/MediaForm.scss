@@ -1,0 +1,22 @@
+@media(max-width: 1000px){
+    #login-form{
+        input, button, .info, #register{
+            width: 70%;
+        }
+    }
+}
+
+@media(max-width: 400px){
+    #login-form{
+        input, button, .info, #register{
+            width: 90%;
+        }
+    }
+}
+@media(max-width: 500px){
+    #form-register{
+        input, select, a, button, #info{
+            width: 300px;
+        }
+    }
+}

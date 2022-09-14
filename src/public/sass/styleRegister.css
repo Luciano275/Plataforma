@@ -1,0 +1,113 @@
+body {
+  overflow-x: hidden;
+  animation: fade 0.5s ease forwards;
+  -webkit-animation: fade 0.5s ease forwards;
+  -moz-animation: fade 0.5s ease forwards;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  transition: all 300ms ease !important;
+  -webkit-transition: all 300ms ease !important;
+  -moz-transition: all 300ms ease !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1 {
+  text-align: center;
+  font-size: 5em;
+  font-weight: 70;
+}
+
+#form-register {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#form-register input, #form-register select {
+  width: 400px;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  outline: none;
+  border: 1px solid #aaa;
+}
+#form-register input:focus, #form-register select:focus {
+  border-color: #48e;
+}
+#form-register #info {
+  margin-bottom: 20px;
+  width: 400px;
+  max-width: 100%;
+  height: 0px;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out !important;
+  -webkit-transition: all 0.3s ease-in-out !important;
+  -moz-transition: all 0.3s ease-in-out !important;
+  background: #f00;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0px 10px;
+  max-height: 50px;
+}
+#form-register .error {
+  height: 50px !important;
+}
+#form-register a {
+  display: block;
+  margin-bottom: 20px;
+  width: 400px;
+  color: #48e;
+}
+#form-register a:hover {
+  text-decoration: underline;
+  color: #25e;
+}
+#form-register button {
+  width: 400px;
+  padding: 10px 5px;
+  display: block;
+  font-size: 18px;
+  border: none;
+  background: #48e;
+  color: #fff;
+}
+#form-register button:hover {
+  cursor: pointer;
+  background: #09f;
+}
+
+@media (max-width: 1000px) {
+  #login-form input, #login-form button, #login-form .info, #login-form #register {
+    width: 70%;
+  }
+}
+@media (max-width: 400px) {
+  #login-form input, #login-form button, #login-form .info, #login-form #register {
+    width: 90%;
+  }
+}
+@media (max-width: 500px) {
+  #form-register input, #form-register select, #form-register a, #form-register button, #form-register #info {
+    width: 300px;
+  }
+}
+
+/*# sourceMappingURL=styleRegister.css.map */

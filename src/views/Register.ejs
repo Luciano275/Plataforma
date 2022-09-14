@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/api/sass/styleRegister.css">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <h1>Register</h1>
+    <form id="form-register">
+        <input type="text" name="nombre" id="nombre" placeholder="Nombre">
+        <input type="text" name="apellido" id="apellido" placeholder="Apellido">
+        <input type="password" name="password" id="password" placeholder="Contraseña">
+        <select name="rol" id="rol">
+            <option value="Profesor">Profesor</option>
+            <option value="Alumno">Alumno</option>
+        </select>
+        <div id="info">a</div>
+        <a href="/">Iniciar Sesion</a>
+        <button>Registrarse</button>
+    </form>
+    <script>
+
+        let info = document.querySelector('#info');
+        document.querySelector('#form-register').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let formData = new FormData();
+            formData.append("nombre", document.querySelector('#form-register #nombre').value)
+            formData.append("apellido", document.querySelector('#form-register #apellido').value)
+            formData.append("password", document.querySelector('#form-register #password').value)
+            formData.append("rol", document.querySelector('#form-register #rol').value)
+            
+            fetch('/api-rest-user/register', {
+                method: 'POST',
+                body: formData
+            })
+                .then(rs => rs.json())
+                .then(data => {
+                    if(data.status == 500){
+                        info.classList.add('error');
+                        info.innerText = 'Se admite texto, numeros y por lo menos 4 caracteres.'
+                    }else if(data.status == 200){
+                        info.classList.remove('error');
+                        info.innerText = '';
+                        e.target.reset()
+                        Swal.fire({
+                            title: 'Register',
+                            text: 'Register was successful!',
+                            icon: 'success',
+                            timer: 1000
+                        })
+                    }else if(data.status == 404){
+                        info.classList.add('error');
+                        info.innerText = 'Elije otra contraseña, esa ya se encuentra registrada.'
+                    }
+                })
+        })
+
+    </script>
+</body>
+</html>
