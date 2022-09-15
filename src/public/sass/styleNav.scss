@@ -1,0 +1,42 @@
+nav{
+    background: #09f;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .titulo{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        a{
+            display: block;
+            color: #ccc;
+            padding: 5px 15px;
+            font-size: 20px;
+            &:hover{
+                color: #fff;
+            }
+            &:first-child{
+                font-weight: 400;
+                color: #fff;
+                font-size: 25px;
+            }
+        }
+    }
+    #logout{
+        background: #f00;
+        color: #fff;
+        padding: 5px 20px;
+        border: none;
+        font-size: 20px;
+        border-radius: 50px;
+        &:hover{
+            cursor: pointer;
+            background: #700;
+        }
+    }
+    .activeWeb{
+        color: #fff !important;
+        transform: scale(1.1);
+    }
+}

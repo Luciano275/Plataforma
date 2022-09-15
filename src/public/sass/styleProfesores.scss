@@ -1,0 +1,60 @@
+@import "General.scss";
+
+#titulo-profesores{
+    font-size: 4em;
+    font-weight: 70;
+    text-align: center;
+    padding: 20px 5px;
+}
+
+.profesores-div{
+    padding: 20px 2rem;
+    background: rgb(230,230,230);
+    .profesor-div{
+        padding: 20px 5px;
+        border-bottom: 1px solid #000;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        &:hover .enviar-mensaje{
+            opacity: 1;
+        }
+        h2{
+            font-weight: 70;
+            width: max-content;
+            &:hover ~ .enviar-mensaje{
+                opacity: 1;
+            }
+        }
+        .profesor-status{
+            position: absolute;
+            top: 25px;
+            right: 0;
+            width: 25px;
+            height: 25px;
+            border-radius: 50px;
+        }
+        .online{
+            background: #090 !important;
+        }
+        .offline{
+            background: #900 !important;
+        }
+        .enviar-mensaje{
+            position: absolute;
+            top: 25%;
+            right: 40px;
+            width: 300px;
+            background: #09f;
+            z-index: 100;
+            color: #fff;
+            padding: 10px 15px;
+            opacity: 0;
+            &:hover{
+                background-color: #07f;
+                cursor: pointer;
+            }
+        }
+    }
+}

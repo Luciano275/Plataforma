@@ -1,4 +1,8 @@
 <nav>
-    <h2><%= rol %> <%= nombre.substring(0,15) %> <%= apellido.substring(0,15) %></h2>
+    <div class="titulo">
+        <a href="/"><%= rol %> <%= nombre.substring(0,15) %> <%= apellido.substring(0,15) %></a>
+        <a href="/login/auth/perfect/profesores" id="/login/auth/perfect/profesores">Profesores</a>
+        <a href="/login/auth/perfect/alumnos" id="/login/auth/perfect/alumnos">Alumnos</a>
+    </div>
     <button id="logout">Cerrar Session</button>
 </nav>

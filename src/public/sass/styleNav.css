@@ -1,0 +1,44 @@
+nav {
+  background: #09f;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav .titulo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+nav .titulo a {
+  display: block;
+  color: #ccc;
+  padding: 5px 15px;
+  font-size: 20px;
+}
+nav .titulo a:hover {
+  color: #fff;
+}
+nav .titulo a:first-child {
+  font-weight: 400;
+  color: #fff;
+  font-size: 25px;
+}
+nav #logout {
+  background: #f00;
+  color: #fff;
+  padding: 5px 20px;
+  border: none;
+  font-size: 20px;
+  border-radius: 50px;
+}
+nav #logout:hover {
+  cursor: pointer;
+  background: #700;
+}
+nav .activeWeb {
+  color: #fff !important;
+  transform: scale(1.1);
+}
+
+/*# sourceMappingURL=styleNav.css.map */

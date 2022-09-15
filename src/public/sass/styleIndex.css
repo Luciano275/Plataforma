@@ -73,6 +73,7 @@ form {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding-bottom: 20px;
 }
 form .buttons-p-v {
   display: flex;
@@ -161,30 +162,6 @@ h1 {
 #data-file {
   margin-bottom: 30px;
   display: none;
-}
-
-nav {
-  background: #09f;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-nav h2 {
-  font-weight: 400;
-  color: #fff;
-}
-nav #logout {
-  background: #f00;
-  color: #fff;
-  padding: 5px 20px;
-  border: none;
-  font-size: 20px;
-  border-radius: 50px;
-}
-nav #logout:hover {
-  cursor: pointer;
-  background: #700;
 }
 
 #private-arch {

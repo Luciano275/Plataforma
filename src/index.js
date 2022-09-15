@@ -11,6 +11,7 @@ const connection = require('./database/db');
 const regexExp = /([a-zA-Z]|[0-9]|[a-zA-Z][0-9]|[0-9][a-zA-Z]){4,}/;
 const bcrypt = require('bcrypt')
 const expressSession = require('express-session');
+const SocketIO = require('socket.io');
 
 app.set('port', PORT);
 app.set('view engine', 'ejs')
@@ -33,48 +34,26 @@ app.use(expressSession({
     saveUninitialized: false
 }))
 
-app.get('/api-rest/get', (req,res) => {
-    connection.query('SELECT * FROM archivos ORDER BY ID DESC', (err, data) => {
-        if(err) throw err;
-        if(data.length > 0){
-            let exts = []
-            let datosPrivados = [];
-            data.forEach((d) => {
-                d.fecha = `${d.fecha.getDate()} de ${process.env.Meses.split(',')[d.fecha.getMonth()]} de ${d.fecha.getFullYear()}`
-                exts.push(path.extname(d.originalname).toLowerCase());
-                if(d.publicprivate == 'privado'){
-                    datosPrivados.push(d)
-                }
-            })
-            // data.reverse()
-            // exts.reverse()
-            setTimeout(() => {
-                console.log(datosPrivados)
-                res.json({
-                    datos: data,
-                    exts,
-                    datosPrivados
-                })
-            }, 100);
-        }else{
-            res.json({
-                datos: []
-            })
-        }
-    })
-})
-
 app.get('/register', (req,res) => {
     res.render('Register')
 })
 
 app.get('/', (req,res) => {  
+    
     if(typeof req.session.login != "undefined" && req.session.login){
-        res.render('index', {
-            nombre: req.session.name,
-            apellido: req.session.surname,
-            rol: req.session.rolcitope,
-            password: req.session.pass
+        connection.query(`SELECT * FROM usuarios WHERE password = ?`, req.session.pass, (rr, rrs) => {
+            if(rr) throw rr;
+            if(rrs[0].status === 'online'){
+                res.render('index', {
+                    nombre: req.session.name,
+                    apellido: req.session.surname,
+                    rol: req.session.rolcitope,
+                    password: req.session.pass
+                })
+            }else{
+                req.session.destroy();
+                res.render('Login')
+            }
         })
     }else{
         res.render('Login')
@@ -121,25 +100,34 @@ app.post('/api-rest/add', (req,res) => {
 
 app.get('/open/:id', (req,res) => {
     if(typeof req.session.login != "undefined" && req.session.login){
-        let id = req.params.id;
-        connection.query(`SELECT * FROM archivos WHERE nombre = '${id}'`, (err,resultados)=> {
-            if(err) throw err;
-            if(resultados.length > 0){
-                let ext = ''
-                resultados.forEach((d) => {
-                    d.fecha = `${d.fecha.getDate()} de ${process.env.Meses.split(',')[d.fecha.getMonth()]} de ${d.fecha.getFullYear()}`
-                    ext = path.extname(d.originalname).toLocaleLowerCase()
-                })
-                resultados.reverse()
-                res.render('open', {
-                    nameFile: resultados[0].originalname,
-                    resultados: resultados[0],
-                    ext
+        connection.query(`SELECT * FROM usuarios WHERE password = ?`, req.session.pass, (rr, rrs) => {
+            if(rr) throw rr;
+            if(rrs[0].status === 'online'){
+                let id = req.params.id;
+                connection.query(`SELECT * FROM archivos WHERE nombre = '${id}'`, (err,resultados)=> {
+                    if(err) throw err;
+                    if(resultados.length > 0){
+                        let ext = ''
+                        resultados.forEach((d) => {
+                            d.fecha = `${d.fecha.getDate()} de ${process.env.Meses.split(',')[d.fecha.getMonth()]} de ${d.fecha.getFullYear()}`
+                            ext = path.extname(d.originalname).toLocaleLowerCase()
+                        })
+                        resultados.reverse()
+                        res.render('open', {
+                            nameFile: resultados[0].originalname,
+                            resultados: resultados[0],
+                            ext
+                        })
+                    }else{
+                        res.render('index')
+                    }
                 })
             }else{
-                res.render('index')
+                req.session.destroy();
+                res.redirect('/login/auth/perfect')
             }
         })
+        
     }else{
         res.redirect('/')
     }
@@ -175,7 +163,7 @@ app.post('/api-rest-user/register', (req,res) => {
                         });
                         setTimeout(() => {
                             
-                            connection.query("INSERT INTO usuarios (nombre, apellido, password, rol) VALUES ?", [[[nombre, apellido, encriptedPassword, rol]]], (error, resultado) => {
+                            connection.query("INSERT INTO usuarios (nombre, apellido, password, rol, status) VALUES ?", [[[nombre, apellido, encriptedPassword, rol, "offline"]]], (error, resultado) => {
                                 if(error){
                                     throw error;
                                 }
@@ -196,7 +184,7 @@ app.post('/api-rest-user/register', (req,res) => {
                 });
                 setTimeout(() => {
                     
-                    connection.query("INSERT INTO usuarios (nombre, apellido, password, rol) VALUES ?", [[[nombre, apellido, encriptedPassword, rol]]], (error, resultado) => {
+                    connection.query("INSERT INTO usuarios (nombre, apellido, password, rol, status) VALUES ?", [[[nombre, apellido, encriptedPassword, rol, "offline"]]], (error, resultado) => {
                         if(error) throw error;
                         return res.json({
                             status: 200
@@ -239,17 +227,26 @@ app.post('/api-rest-user/login', (req,res) => {
                     if(arrayPasswords.includes(true)){
                         req.session.name = nombre;
                         req.session.login = true;
-                        connection.query(`SELECT rol, apellido, password FROM usuarios WHERE ID = ?`, id, (elpincherror, elpincheid) => {
+                        connection.query(`SELECT rol, apellido, password,status FROM usuarios WHERE ID = ?`, id, (elpincherror, elpincheid) => {
                             if(elpincherror) throw elpincherror;
-                            req.session.rolcitope = elpincheid[0].rol;
-                            req.session.surname = elpincheid[0].apellido;
-                            req.session.pass = elpincheid[0].password;
+                            if(elpincheid[0].status === 'online'){
+                                return res.json({
+                                    status: 402
+                                })
+                            }else{
+                                req.session.rolcitope = elpincheid[0].rol;
+                                req.session.surname = elpincheid[0].apellido;
+                                req.session.pass = elpincheid[0].password;
+                                setTimeout(() => {
+                                    connection.query(`UPDATE usuarios SET status = 'online' WHERE password = ?`, req.session.pass, (unerror, unresultado) => {
+                                        if(unerror) throw unerror;
+                                        res.json({
+                                            status: 200
+                                        })
+                                    })
+                                }, 100);
+                            }
                         })
-                        setTimeout(() => {
-                            res.json({
-                                status: 200
-                            })
-                        }, 100);
                     }else{
                         res.json({
                             status: 404
@@ -272,8 +269,16 @@ app.post('/api-rest-user/login', (req,res) => {
 
 app.get('/api-rest/auth', (req,res) => {
     if(typeof req.session.login != "undefined" && req.session.login){
-        res.json({
-            status: 200
+        connection.query(`SELECT * FROM usuarios WHERE password = ?`, req.session.pass, (rr, rrs) => {
+            if(rr) throw rr;
+            if(rrs[0].status === 'online'){
+                res.json({
+                    status: 200
+                })
+            }else{
+                req.session.destroy();
+                res.redirect('/login/auth/perfect')
+            }
         })
     }else{
         res.json({
@@ -284,24 +289,122 @@ app.get('/api-rest/auth', (req,res) => {
 
 app.get('/login/auth/perfect', (req,res) => {
     if(typeof req.session.login != "undefined" && req.session.login){
-        res.render('index', {
-            nombre: req.session.name,
-            apellido: req.session.surname,
-            rol: req.session.rolcitope,
-            password: req.session.pass
-        })
+        connection.query(`SELECT * FROM usuarios WHERE password = ?`, req.session.pass, (rr, rrs) => {
+            if(rr) throw rr;
+            if(rrs[0].status === 'online'){
+                res.render('index', {
+                    nombre: req.session.name,
+                    apellido: req.session.surname,
+                    rol: req.session.rolcitope,
+                    password: req.session.pass,
+                    login: req.session.login
+                })
+            }else{
+                req.session.destroy();
+                res.redirect('/')
+            }
+        })      
     }else{
         res.redirect('/')
     }
 })
 
 app.get('/api-rest/logout', (req,res) => {
-    req.session.destroy();
     setTimeout(() => {
-        res.json({
-            status: 200
+        connection.query(`UPDATE usuarios SET status = 'offline' WHERE password = ?`, req.session.pass,(unerror, unresultado) => {
+            if(unerror) throw unerror;
+            req.session.destroy();
+            res.json({
+                status: 200
+            })
         })
     }, 100);
 })
 
-app.listen(app.get('port'), () => console.log(`Served running on port ${PORT}`))
+app.get('/login/auth/perfect/profesores', (req,res) => {
+    setTimeout(() => {
+        if(typeof req.session.login != "undefined" && req.session.login){
+            connection.query(`SELECT * FROM usuarios WHERE password = ?`, req.session.pass, (rr, rrs) => {
+                if(rr) throw rr;
+                if(rrs[0].status === 'online'){
+                    res.render('Profesores', {
+                        nombre: req.session.name,
+                        apellido: req.session.surname,
+                        rol: req.session.rolcitope,
+                        password: req.session.pass
+                    })
+                }else{
+                    req.session.destroy();
+                    res.redirect('/login/auth/perfect/profesores')
+                }
+            })
+        }else{
+            res.redirect('/')
+        }
+    }, 100);
+})
+
+const server = app.listen(app.get('port'), () => console.log(`Served running on port ${PORT}`));
+
+const io = SocketIO(server);
+
+io.on("connect", (socket) => {
+    console.log(socket.id)
+    let profesoresArray = [];
+    let alumnosArray = [];
+    socket.on('ineedprof', (da) => {
+        connection.query("SELECT * FROM usuarios", (err, datos) => {
+            if(err) throw err;
+            if(datos.length > 0){
+                datos.forEach((dato) => {
+                    if(dato.rol === 'Profesor'){
+                        profesoresArray.push(dato)
+                    }else if(dato.rol === 'Alumno'){
+                        alumnosArray.push(dato)
+                    }
+                })
+            }
+        })
+        setTimeout(() => {
+            io.sockets.emit("ineedprof", ({
+                profesoresArray,
+                alumnosArray
+            }));
+            profesoresArray = [];
+            alumnosArray = [];
+        }, 100);
+    })
+    socket.on("ineeddata", (dat) => {
+        let exts = [];
+        let archivosArray = [];
+        let archivosPrivados = [];
+        connection.query('SELECT * FROM archivos ORDER BY ID DESC', (err, resultados) => {
+            if(err) throw err;
+            if(resultados.length>0){
+                resultados.forEach((resultado) => {
+                    resultado.fecha = `${resultado.fecha.getDate()} de ${process.env.Meses.split(',')[resultado.fecha.getMonth()]} de ${resultado.fecha.getFullYear()}`
+                    exts.push(path.extname(resultado.originalname).toLowerCase());
+                    if(resultado.publicprivate === 'publico'){
+                        archivosArray.push(resultado)
+                    }else if(resultado.publicprivate === 'privado'){
+                        archivosPrivados.push(resultado)
+                    }
+                })
+            }else{
+                archivosArray = [];
+                archivosPrivados = [];
+                exts = [];
+            }
+        })
+        setTimeout(() => {
+            io.sockets.emit('ineeddata', ({
+                archivosPublicos: archivosArray,
+                archivosPrivados,
+                exts
+            }))
+            archivosArray = [];
+            archivosPrivados = [];
+            exts = [];
+        }, 100);
+    })
+})

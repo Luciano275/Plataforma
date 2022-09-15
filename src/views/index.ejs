@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0".>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
     <title>Documento</title>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="/api/footer.css">
     <link rel="stylesheet" href="/api/sass/styleIndex.css">
+    <link rel="stylesheet" href="/api/sass/styleNav.css">
 </head>
 <body>
     <%- include("components/Nav.ejs") %>
@@ -30,7 +34,10 @@
     <h2 class="archivos">Archivos Publicos:</h2>
     <div class="dadArchivos"></div>
     <%- include('components/Footer.ejs') %>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+
+        const socketArchivos = io();
 
         let pv = 'publico';
         let dp = document.querySelector('.datosPrivados');
@@ -43,122 +50,87 @@
 
         document.querySelector('#private').addEventListener('click', (e) => {
             pv = 'privado';
-            console.log(pv)
             document.querySelector("#public").disabled = false;
             e.target.disabled = true;
         })
 
-        document.querySelector('#logout').addEventListener('click', () => {
-            let timerInterval;
-            Swal.fire({
-                title: 'Logout',
-                text: 'Closing session...',
-                timer: 1000,
-                timerProgressBar: true,
-            }).then((result) => {
-                if(result.dismiss === Swal.DismissReason.timer){
-                    fetch('/api-rest/logout')
-                        .then((rs) => rs.json())
-                        .then((dt) => {
-                            Swal.fire({
-                                title: 'Logout',
-                                text: 'Session Closed!',
-                                icon: 'success',
-                                timer: 700
-                            })
-                                .then(() => {
-                                    window.location.reload();
-                                })
-                        })
-                }
-            })
-        })
-
         const obtenerArchivos = () => {
-            let dadArchivos = document.querySelector(".dadArchivos")
-            fetch('/api-rest/get')
-                .then(rs => rs.json())
-                .then(data => {
-                    if(data.datosPrivados.length > 0){
-                        let variableTmp = '';
-                        let datoP = [];
-                        data.datosPrivados.forEach((datoprivado) => {
-                            if(datoprivado.psde == '<%= password %>'){
-                                datoP.push(datoprivado)
-                            }
-                        })
-                        setTimeout(() => {
-                            if(datoP.length > 0){
-                                dp.style.display = 'flex'
-                                document.querySelector('#private-arch').style.display = 'block'
-                                // datoP.forEach((dr) => {
-                                //     console.log(dr)
-                                //     variableTmp += `
-                                //     <a href='/open/${dr.nombre}' class="privado-archivo">
-                                //         <h2>${dr.ID}</h2>
-                                //         <h2>${dr.originalname.length >= 16 ? dr.originalname.substring(0,16) + '...' : dr.originalname}</h2>
-                                //         <p>${dr.fecha}</p>
-                                //         <p><b>${dr.de}</b></p>
-                                //         <span class='animation-box' title='${dr.originalname}'>Abrir</span>
-                                //     </a>
-                                //     `
-                                // })
-                                datoP.forEach((dt, index) => {
-                                    if(data.exts[index].trim() == ".jpg" || data.exts[index].trim() == '.png' || data.exts[index].trim() == '.jpeg' || data.exts[index].trim() == '.pdf' || data.exts[index].trim() == '.webp' || data.exts[index].trim() == '.txt'){
-                                        variableTmp += `
-                                        <a href='/open/${dt.nombre}' class="privado-archivo">
-                                            <h2>${dt.ID}</h2>
-                                            <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
-                                            <p>${dt.fecha}</p>
-                                            <p><b>${dt.de}</b></p>
-                                            <span class='animation-box' title='${dt.originalname}'>Abrir</span>
-                                        </a>
-                                        `
-                                    }else{
-                                        variableTmp+=`
-                                        <a href='/open/${dt.ID}' download="${dt.originalname}" class="privado-archivo">
-                                            <h2>${dt.ID}</h2>
-                                            <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
-                                            <p>${dt.fecha}</p>
-                                            <p>${dt.de}</p>
-                                            <span class='animation-box' title='${dt.originalname}'>Descargar</span>
-                                        </a>
-                                        `
-                                    }
-                                })
-                                dp.innerHTML = variableTmp;
-                            }
-                        }, 100);
-                    }
-                    if(data.datos.length > 0){
-                        let temp = '';
-                        data.datos.forEach((dt, index) => {
-                            if(data.exts[index].trim() == ".jpg" || data.exts[index].trim() == '.png' || data.exts[index].trim() == '.jpeg' || data.exts[index].trim() == '.pdf' || data.exts[index].trim() == '.webp' || data.exts[index].trim() == '.txt'){
-                                temp += `
-                                <a href='/open/${dt.nombre}' class="childArchivo">
-                                    <h2>${dt.ID}</h2>
-                                    <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
-                                    <p>${dt.fecha}</p>
-                                    <p><b>${dt.de}</b></p>
-                                    <span class='animation-box' title='${dt.originalname}'>Abrir</span>
-                                </a>
-                                `
-                            }else{
-                                temp+=`
-                                <a key='1' href='/open/${dt.ID}' download="${dt.originalname}" class="childArchivo">
-                                    <h2>${dt.ID}</h2>
-                                    <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
-                                    <p>${dt.fecha}</p>
-                                    <p>${dt.de}</p>
-                                    <span class='animation-box' title='${dt.originalname}'>Descargar</span>
-                                </a>
-                                `
-                            }
-                        })
-                        dadArchivos.innerHTML = temp;
-                    }
-                })
-                .catch(err => console.log(err))
+
+            socketArchivos.emit('ineeddata', (true));
+            socketArchivos.on('ineeddata', (datos) => {
+                let dadArchivos = document.querySelector(".dadArchivos")
+                if(datos.archivosPrivados.length > 0){
+                    let variableTmp = '';
+                    let datoP = [];
+                    datos.archivosPrivados.forEach((datoprivado) => {
+                        if(datoprivado.psde == '<%= password %>'){
+                            datoP.push(datoprivado)
+                        }
+                    })
+                    setTimeout(() => {
+                        if(datoP.length > 0){
+                            dp.style.display = 'flex'
+                            document.querySelector('#private-arch').style.display = 'block'
+                            datoP.forEach((dt, index) => {
+                                if(datos.exts[index].trim() == ".jpg" || datos.exts[index].trim() == '.png' || datos.exts[index].trim() == '.jpeg' || datos.exts[index].trim() == '.pdf' || datos.exts[index].trim() == '.webp' || datos.exts[index].trim() == '.txt'){
+                                    variableTmp += `
+                                    <a href='/open/${dt.nombre}' class="privado-archivo">
+                                        <h2>${dt.ID}</h2>
+                                        <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                        <p>${dt.fecha}</p>
+                                        <p><b>${dt.de}</b></p>
+                                        <span class='animation-box' title='${dt.originalname}'>Abrir</span>
+                                    </a>
+                                    `
+                                }else{
+                                    variableTmp+=`
+                                    <a href='/open/${dt.ID}' download="${dt.originalname}" class="privado-archivo">
+                                        <h2>${dt.ID}</h2>
+                                        <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                        <p>${dt.fecha}</p>
+                                        <p>${dt.de}</p>
+                                        <span class='animation-box' title='${dt.originalname}'>Descargar</span>
+                                    </a>
+                                    `
+                                }
+                            })
+                            dp.innerHTML = variableTmp;
+                        }
+                    }, 100);
+                }
+                if(datos.archivosPublicos.length > 0){
+                    document.querySelector(".archivos").style.display = 'block';
+                    let temp = '';
+                    datos.archivosPublicos.forEach((dt, index) => {
+                        if(datos.exts[index].trim() == ".jpg" || datos.exts[index].trim() == '.png' || datos.exts[index].trim() == '.jpeg' || datos.exts[index].trim() == '.pdf' || datos.exts[index].trim() == '.webp' || datos.exts[index].trim() == '.txt'){
+                            temp += `
+                            <a href='/open/${dt.nombre}' class="childArchivo">
+                                <h2>${dt.ID}</h2>
+                                <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                <p>${dt.fecha}</p>
+                                <p><b>${dt.de}</b></p>
+                                <span class='animation-box' title='${dt.originalname}'>Abrir</span>
+                            </a>
+                            `
+                        }else{
+                            temp+=`
+                            <a key='1' href='/open/${dt.ID}' download="${dt.originalname}" class="childArchivo">
+                                <h2>${dt.ID}</h2>
+                                <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                <p>${dt.fecha}</p>
+                                <p>${dt.de}</p>
+                                <span class='animation-box' title='${dt.originalname}'>Descargar</span>
+                            </a>
+                            `
+                        }
+                    })
+                    dadArchivos.innerHTML = temp;
+                }else{
+                    document.querySelector(".archivos").style.display = 'none';
+                }
+
+            })
+
         }
 
         obtenerArchivos()
@@ -188,6 +160,7 @@
                     .then(rs => rs.json())
                     .then(data => {
                         if(data.status === 200){
+                            socketArchivos.emit('ineeddata', (true));
                             document.querySelector('#formAdd').reset();
                             document.querySelector('#data-file').style.display = 'none'
                             obtenerArchivos();
@@ -209,5 +182,6 @@
             }
         })
     </script>
+    <script src="/api/app.js"></script>
 </body>
 </html>
