@@ -7,19 +7,20 @@
     <meta http-equiv='cache-control' content='no-cache'>
     <meta http-equiv='expires' content='0'>
     <meta http-equiv='pragma' content='no-cache'>
-    <title>Profesores</title>
-    <link rel="stylesheet" href="/api/sass/styleProfesores.css">
+    <title>Alumnos</title>
+    <link rel="stylesheet" href="/api/sass/styleAlumnos.css">
     <link rel="stylesheet" href="/api/sass/styleNav.css">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    
 </head>
 <body>
     <%- include("components/Nav.ejs") %>
     <p id="id-p" style="display: none;"><%= ID %></p>
-    <h2 id="titulo-profesores"></h2>
-    <div class="profesores-div"></div>
+    <h2 id='titulo-alumnos'></h2>
+    <div class="alumnos-div"></div>
     <%- include("components/Mensaje.ejs") %>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/api/app.js"></script>

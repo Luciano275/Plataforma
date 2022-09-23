@@ -7,7 +7,7 @@
     <meta http-equiv='cache-control' content='no-cache'>
     <meta http-equiv='expires' content='0'>
     <meta http-equiv='pragma' content='no-cache'>
-    <title>Document</title>
+    <title>Login</title>
     <link rel="stylesheet" href="/api/sass/styleLogin.css">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -50,6 +50,7 @@
                             .then((d) => d.json())
                             .then((dt) => {
                                 if(dt.status === 200){
+                                    localStorage.setItem('lg', true)
                                     Swal.fire({
                                         title: 'Login',
                                         text: 'Inicio de sesion correcto!',

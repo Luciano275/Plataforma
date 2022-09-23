@@ -1,0 +1,171 @@
+
+@mixin backdropFilter($px){
+    -webkit-backdrop-filter: blur($px);
+    backdrop-filter: blur($px);
+}
+
+.open-modal{
+    right: 20px !important;
+}
+
+.modal-mensaje{
+    position: fixed;
+    bottom: 20px;
+    right: -100%;
+    z-index: 100;
+    @include backdropFilter(10px);
+    background: rgba(0,100,255,.1);
+    height: 350px;
+    max-height: 350px;
+    max-width: 350px;
+    width: 350px;
+    padding: 10px;
+    overflow: hidden;
+    border-radius: 20px;
+    #modal-receptor{
+        font-weight: 70;
+        font-size: 2em;
+        word-break: keep-all;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .modal-chat{
+        display: flex;
+        flex-direction: column;
+        padding: 10px 5px;
+        position: relative;
+        height: 220px;
+        max-height: 220px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: rgba(0,100,255,.1);
+        &::-webkit-scrollbar{
+            width: 7px;
+            background: #fff;
+            border-radius: 50px;
+        }
+        &::-webkit-scrollbar-thumb{
+            background: #09f;
+            border-radius: 50px;
+            border: 2px solid #fff;
+        }
+        .modal-chat-container{
+            position: relative;
+            p{
+                margin-bottom: 5px;
+                color: #fff;
+                word-break: break-all;
+                position: relative;
+                display: flex;
+                span{
+                    display: block;
+                    padding: 5px;
+                    @include backdropFilter(10px);
+                    width: max-content;
+                    max-width: 90%;
+                    word-break: break-all;
+                }
+            }
+            p.receptor span{
+                background: rgba(0,200,255,0.4);
+            }
+            p.author span{
+                background: rgba(0,100,255,0.2);
+            }
+            p.author{
+                justify-content: flex-end;
+            }
+            p.receptor{
+                justify-content: flex-start;
+            }
+            .modal-fecha{
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                font-weight: 70 !important;
+            }
+            .modal-ver{
+                width: 100%;
+                max-width: 100%;
+                display: flex;
+                span{
+                    white-space: nowrap;
+                }
+            }
+            .modal-ver-receptor{
+                justify-content: flex-start;
+            }
+            .modal-ver-author{
+                justify-content: flex-end;
+            }
+        }
+    }
+    .modal-form{
+        display: flex;
+        position: absolute;
+        width: 100%;
+        max-width: 100%;
+        bottom: 0;
+        left: 0;
+        justify-content: center;
+        align-items: center;
+        padding: 5px 0px;
+        input{
+            width: 260px;
+            max-width: 260px;
+            height: 35px;
+            max-height: 35px;
+            padding: 5px 10px;
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+            border: 1px solid #aaa;
+            outline: none;
+            font-size: 16px;
+            &:focus{
+                border-color: #48e;
+            }
+        }
+        button{
+            padding: 5px;
+            height: 35px;
+            max-height: 35px;
+            border: none;
+            background: #09f;
+            color: #fff;
+            font-size: 16px;
+            border-top-right-radius: 50px;
+            border-bottom-right-radius: 50px;
+            &:hover{
+                background: #06f;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+@media(min-width: 1300px){
+    .modal-mensaje{
+        max-width: 400px;
+        width: 400px;
+        max-height: 400px;
+        height: 400px;
+        .modal-chat{
+            max-height: 250px;
+            height: 250px;
+        }
+        .modal-form{
+            input{
+                width: 300px;
+                max-width: 300px;
+                height: 40px;
+                max-height: 40px;
+                font-size: 18px;
+            }
+            button{
+                height: 40px;
+                max-height: 40px;
+                font-size: 18px;
+            }
+        }
+    }
+}

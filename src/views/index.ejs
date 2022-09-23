@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -7,37 +7,41 @@
     <meta http-equiv='cache-control' content='no-cache'>
     <meta http-equiv='expires' content='0'>
     <meta http-equiv='pragma' content='no-cache'>
-    <title>Documento</title>
+    <title><%= rol %> <%= nombre.substring(0,15) %> <%= apellido.substring(0,15) %></title>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="/api/footer.css">
     <link rel="stylesheet" href="/api/sass/styleIndex.css">
     <link rel="stylesheet" href="/api/sass/styleNav.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 </head>
 <body>
     <%- include("components/Nav.ejs") %>
-    <h1>Plataforma</h1>
-    <form method="post" id="formAdd" enctype="multipart/form-data">
-        <div class="input">
-            <input type="file" name="archivo" id="archivo">
-            <span id="subir">Subir un archivo</span>
-        </div>
-        <p id='data-file'></p>
-        <div class="buttons-p-v">
-            <button id="public" type="button">Publico</button>
-            <button id="private" type="button">Privado</button>
-        </div>
-        <button id="send">Enviar</button>
-    </form>
-    <h2 id="private-arch">Tus Archivos Privados:</h2>
-    <div class="datosPrivados"></div>
-
-    <h2 class="archivos">Archivos Publicos:</h2>
-    <div class="dadArchivos"></div>
+    <main>
+        <h1>Plataforma</h1>
+        <form method="post" id="formAdd" enctype="multipart/form-data">
+            <div class="input">
+                <input type="file" name="archivo" id="archivo">
+                <span id="subir">Subir un archivo</span>
+            </div>
+            <p id='data-file'></p>
+            <div class="buttons-p-v">
+                <button id="public" type="button">Publico</button>
+                <button id="private" type="button">Privado</button>
+            </div>
+            <button id="send">Enviar</button>
+        </form>
+        <h2 id="private-arch">Tus Archivos Privados:</h2>
+        <div class="datosPrivados"></div>
+    
+        <h2 class="archivos">Archivos Publicos:</h2>
+        <div class="dadArchivos"></div>
+    </main>
     <%- include('components/Footer.ejs') %>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-
         const socketArchivos = io();
+        const regexExpExt = /\.(jpg|jpeg|gif|pdf|webp|png|txt)$/gi;
 
         let pv = 'publico';
         let dp = document.querySelector('.datosPrivados');
@@ -72,26 +76,28 @@
                             dp.style.display = 'flex'
                             document.querySelector('#private-arch').style.display = 'block'
                             datoP.forEach((dt, index) => {
-                                if(datos.exts[index].trim() == ".jpg" || datos.exts[index].trim() == '.png' || datos.exts[index].trim() == '.jpeg' || datos.exts[index].trim() == '.pdf' || datos.exts[index].trim() == '.webp' || datos.exts[index].trim() == '.txt'){
-                                    variableTmp += `
-                                    <a href='/open/${dt.nombre}' class="privado-archivo">
-                                        <h2>${dt.ID}</h2>
-                                        <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
-                                        <p>${dt.fecha}</p>
-                                        <p><b>${dt.de}</b></p>
-                                        <span class='animation-box' title='${dt.originalname}'>Abrir</span>
-                                    </a>
-                                    `
-                                }else{
+                                try{
+                                    if(dt.originalname.match(regexExpExt)[0] === ".jpg" || dt.originalname.match(regexExpExt)[0] === '.png' || dt.originalname.match(regexExpExt)[0] === '.jpeg' || dt.originalname.match(regexExpExt)[0] === '.pdf' || dt.originalname.match(regexExpExt)[0] === '.webp' || dt.originalname.match(regexExpExt)[0] == '.txt'){
+                                        variableTmp += `
+                                        <a href='/open/${dt.nombre}' class="privado-archivo">
+                                            <h2>${dt.ID}</h2>
+                                            <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                            <p>${dt.fecha}</p>
+                                            <p><b>${dt.de}</b></p>
+                                            <span class='animation-box' title='${dt.originalname}'>Abrir</span>
+                                        </a>
+                                        `
+                                    }
+                                }catch(er){
                                     variableTmp+=`
-                                    <a href='/open/${dt.ID}' download="${dt.originalname}" class="privado-archivo">
-                                        <h2>${dt.ID}</h2>
-                                        <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
-                                        <p>${dt.fecha}</p>
-                                        <p>${dt.de}</p>
-                                        <span class='animation-box' title='${dt.originalname}'>Descargar</span>
-                                    </a>
-                                    `
+                                        <a href='/open/${dt.ID}' download="${dt.originalname}" class="privado-archivo">
+                                            <h2>${dt.ID}</h2>
+                                            <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
+                                            <p>${dt.fecha}</p>
+                                            <p><b>${dt.de}</b></p>
+                                            <span class='animation-box' title='${dt.originalname}'>Descargar</span>
+                                        </a>
+                                        `
                                 }
                             })
                             dp.innerHTML = variableTmp;
@@ -102,7 +108,7 @@
                     document.querySelector(".archivos").style.display = 'block';
                     let temp = '';
                     datos.archivosPublicos.forEach((dt, index) => {
-                        if(datos.exts[index].trim() == ".jpg" || datos.exts[index].trim() == '.png' || datos.exts[index].trim() == '.jpeg' || datos.exts[index].trim() == '.pdf' || datos.exts[index].trim() == '.webp' || datos.exts[index].trim() == '.txt'){
+                        if(datos.extsPb[index].trim() === ".jpg" || datos.extsPb[index].trim() === '.png' || datos.extsPb[index].trim() === '.jpeg' || datos.extsPb[index].trim() === '.pdf' || datos.extsPb[index].trim() === '.webp' || datos.extsPb[index].trim() === '.txt'){
                             temp += `
                             <a href='/open/${dt.nombre}' class="childArchivo">
                                 <h2>${dt.ID}</h2>
@@ -118,7 +124,7 @@
                                 <h2>${dt.ID}</h2>
                                 <h2>${dt.originalname.length >= 16 ? dt.originalname.substring(0,16) + '...' : dt.originalname}</h2>
                                 <p>${dt.fecha}</p>
-                                <p>${dt.de}</p>
+                                <p><b>${dt.de}</b></p>
                                 <span class='animation-box' title='${dt.originalname}'>Descargar</span>
                             </a>
                             `
@@ -181,6 +187,7 @@
                 })
             }
         })
+
     </script>
     <script src="/api/app.js"></script>
 </body>

@@ -15,18 +15,18 @@ body {
   overflow-x: hidden;
 }
 
-#titulo-profesores {
+#titulo-alumnos {
   font-size: 4em;
   font-weight: 70;
   text-align: center;
   padding: 20px 5px;
 }
 
-.profesores-div {
+.alumnos-div {
   padding: 20px 2rem;
   background: rgb(230, 230, 230);
 }
-.profesores-div .profesor-div {
+.alumnos-div .alumno-div {
   padding: 20px 5px;
   border-bottom: 1px solid #000;
   position: relative;
@@ -34,43 +34,43 @@ body {
   flex-direction: column;
   justify-content: center;
 }
-.profesores-div .profesor-div:hover .enviar-mensaje {
+.alumnos-div .alumno-div:hover .enviar-mensaje {
   opacity: 1;
 }
-.profesores-div .profesor-div h2 {
+.alumnos-div .alumno-div h2 {
   font-weight: 70;
   width: max-content;
 }
-.profesores-div .profesor-div h2:hover ~ .enviar-mensaje {
+.alumnos-div .alumno-div h2:hover ~ .enviar-mensaje {
   opacity: 1;
 }
-.profesores-div .profesor-div .profesor-status {
+.alumnos-div .alumno-div .alumno-status {
   position: absolute;
   top: 25px;
   right: 0;
   width: 25px;
   height: 25px;
-  border-radius: 50px;
+  border-radius: 100%;
 }
-.profesores-div .profesor-div .online {
-  background: #090 !important;
+.alumnos-div .alumno-div .online {
+  background: #090;
 }
-.profesores-div .profesor-div .offline {
-  background: #900 !important;
+.alumnos-div .alumno-div .offline {
+  background: #900;
 }
-.profesores-div .profesor-div .enviar-mensaje {
+.alumnos-div .alumno-div .enviar-mensaje {
   position: absolute;
   top: 25%;
   right: 40px;
   width: 300px;
-  background: #09f;
+  background: #020;
   z-index: 100;
   color: #fff;
   padding: 10px 15px;
   opacity: 0;
 }
-.profesores-div .profesor-div .enviar-mensaje:hover {
-  background-color: #07f;
+.alumnos-div .alumno-div .enviar-mensaje:hover {
+  background-color: #050;
   cursor: pointer;
 }
 
@@ -240,4 +240,4 @@ body {
   }
 }
 
-/*# sourceMappingURL=styleProfesores.css.map */
+/*# sourceMappingURL=styleAlumnos.css.map */

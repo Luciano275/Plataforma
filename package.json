@@ -11,8 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "crypto-js": "^4.1.1",
     "dotenv": "^16.0.2",
     "ejs": "^3.1.8",
+    "enigma-code": "^0.0.11",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "externalip": "^1.0.2",

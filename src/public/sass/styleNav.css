@@ -2,7 +2,6 @@ nav {
   background: #09f;
   padding: 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 nav .titulo {
@@ -24,7 +23,12 @@ nav .titulo a:first-child {
   color: #fff;
   font-size: 25px;
 }
-nav #logout {
+nav .buttons {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+nav .buttons #logout {
   background: #f00;
   color: #fff;
   padding: 5px 20px;
@@ -32,13 +36,33 @@ nav #logout {
   font-size: 20px;
   border-radius: 50px;
 }
-nav #logout:hover {
+nav .buttons #logout:hover {
   cursor: pointer;
   background: #700;
 }
-nav .activeWeb {
+nav .buttons .activeWeb {
   color: #fff !important;
   transform: scale(1.1);
+}
+nav .buttons .button-notify {
+  font-size: 25px;
+  color: #fff;
+  background: none;
+  border: none;
+  padding: 0px 20px 0px 0px;
+  position: relative;
+}
+nav .buttons .button-notify .opacidad {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  opacity: 0;
+}
+nav .buttons .button-notify .opacidad-active {
+  opacity: 1 !important;
+}
+nav .buttons .desactivo {
+  display: none !important;
 }
 
 /*# sourceMappingURL=styleNav.css.map */
